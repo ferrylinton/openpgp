@@ -1,0 +1,23 @@
+body{
+	padding: 0;
+	margin: 0;
+}
+.container-box{
+	margin: 15px 0;
+	padding: 15px;
+	border: solid 1px #ddd;
+	background-color: #F1F1F1;
+}
+.content-box{
+	background-color: #fff;
+	padding: 15px;
+	border: solid 1px #ddd;
+	border-top: none;
+}
+
+.nav-tabs > li.active > a{
+	background-color: #f7f7f7;
+}
+.nav-tabs > li > a:hover{
+	background-color: #fff;
+}
