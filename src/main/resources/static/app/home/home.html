@@ -1,1 +1,41 @@
-HOME
+<div class="row">
+	<div class="col-md-6">
+		<form name="encryptForm" ng-submit="vm.submitEncrypt()" novalidate>
+			<div class="form-group">
+				<label for="encryptData">Data</label>
+				<textarea class="form-control" rows="3" id="encryptData" ng-model="vm.encrypt.data"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="encryptPasswords">Passwords</label>
+				<input type="text" class="form-control" id="encryptPasswords" ng-model="vm.encrypt.passwords">
+			</div>
+			<div class="checkbox">
+				<label><input type="checkbox" ng-model="vm.encrypt.armor">Armor</label>
+			</div>
+			<div class="form-group">
+				<label for="encryptResult">Encrypted Data</label>
+				<textarea class="form-control encrypted" rows="10" id="encryptResult" ng-model="vm.encrypt.result"></textarea>
+			</div>
+			<button type="reset" class="btn btn-default">Reset</button>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+	<div class="col-md-6">
+		<form name="decryptForm" ng-submit="vm.submitDecrypt()" novalidate>
+			<div class="form-group">
+				<label for="decryptMessage">Message</label>
+				<textarea class="form-control encrypted" rows="10" id="decryptMessage" ng-model="vm.decrypt.message"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="decryptPassword">Password</label>
+				<input type="text" class="form-control" id="decryptPassword" ng-model="vm.decrypt.password">
+			</div>
+			<div class="form-group">
+				<label for="decryptData">Data</label>
+				<textarea class="form-control" rows="3" id="decryptData" ng-model="vm.decrypt.result"></textarea>
+			</div>
+			<button type="reset" class="btn btn-default">Reset</button>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+</div>

@@ -21,3 +21,6 @@ body{
 .nav-tabs > li > a:hover{
 	background-color: #fff;
 }
+textarea.encrypted{
+	font-size: 12px;
+}
