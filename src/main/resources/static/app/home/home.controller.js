@@ -19,6 +19,7 @@
 		
 		vm.decrypt = { 
 				message : '',
+				format : 'utf8',
 				password : vm.encrypt.passwords[0],
 				result : ''
 		};
