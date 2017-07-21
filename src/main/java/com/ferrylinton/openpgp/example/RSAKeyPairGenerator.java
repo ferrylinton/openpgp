@@ -1,4 +1,4 @@
-package com.ferrylinton.openpgp.service;
+package com.ferrylinton.openpgp.example;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

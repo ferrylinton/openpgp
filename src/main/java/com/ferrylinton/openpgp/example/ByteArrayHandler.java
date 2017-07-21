@@ -1,4 +1,4 @@
-package com.ferrylinton.openpgp.service;
+package com.ferrylinton.openpgp.example;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +20,7 @@ import org.bouncycastle.openpgp.PGPEncryptedDataList;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPLiteralData;
 import org.bouncycastle.openpgp.PGPLiteralDataGenerator;
+import org.bouncycastle.openpgp.PGPObjectFactory;
 import org.bouncycastle.openpgp.PGPPBEEncryptedData;
 import org.bouncycastle.openpgp.PGPUtil;
 import org.bouncycastle.openpgp.jcajce.JcaPGPObjectFactory;
@@ -80,14 +81,25 @@ public class ByteArrayHandler {
 						.build(passPhrase));
 
 		JcaPGPObjectFactory pgpFact = new JcaPGPObjectFactory(clear);
+		
+		Object message = pgpFact.nextObject();
+		if (message instanceof PGPCompressedData) {
+			pgpFact = new JcaPGPObjectFactory(((PGPCompressedData) message).getDataStream());
 
-		PGPLiteralData cData = (PGPLiteralData) pgpFact.nextObject();
+			PGPLiteralData ld = (PGPLiteralData) pgpFact.nextObject();
 
-		pgpFact = new JcaPGPObjectFactory(cData.getDataStream());
+			return Streams.readAll(ld.getInputStream());
+		}else {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			PGPLiteralData pgpLiteralData = (PGPLiteralData) message;
 
-		PGPLiteralData ld = (PGPLiteralData) pgpFact.nextObject();
-
-		return Streams.readAll(ld.getInputStream());
+			int ch;
+			while ((ch = pgpLiteralData.getInputStream().read()) >= 0) {
+				out.write(ch);
+			}
+			
+			return new String(out.toByteArray(), "UTF-8").getBytes();
+		}
 	}
 
 	/**
@@ -120,7 +132,7 @@ public class ByteArrayHandler {
 			throws IOException, PGPException, NoSuchProviderException {
 		String fileName = PGPLiteralData.CONSOLE;
 
-		byte[] compressedData = compress(clearData, fileName, CompressionAlgorithmTags.UNCOMPRESSED);
+		byte[] compressedData = compress(clearData, fileName, CompressionAlgorithmTags.ZIP);
 
 		ByteArrayOutputStream bOut = new ByteArrayOutputStream();
 
@@ -157,7 +169,7 @@ public class ByteArrayHandler {
 		// later,
 		// in which case we would pass in bOut.
 		OutputStream pOut = lData.open(cos, // the compressed output stream
-				PGPLiteralData.BINARY, fileName, // "filename" to store
+				PGPLiteralData.UTF8, fileName, // "filename" to store
 				clearData.length, // length of clear data
 				new Date() // current time
 		);
@@ -178,9 +190,10 @@ public class ByteArrayHandler {
 
 		byte[] original = "Hello world".getBytes();
 		System.out.println("Starting PGP test");
-		byte[] encrypted = encrypt(original, passArray, PGPEncryptedDataGenerator.CAST5, true);
+		byte[] encrypted = encrypt(original, passArray, PGPEncryptedDataGenerator.CAST5, false);
 
-		System.out.println("\nencrypted data = '" + new String(encrypted) + "'");
+		System.out.println("\nencrypted data = '" + new String(org.bouncycastle.util.encoders.Hex.encode(encrypted)) + "'");
+
 		
 		String temp = "-----BEGIN PGP MESSAGE-----\n"
 				+ "Version: BCPG v1.57\n\n"
@@ -192,10 +205,10 @@ public class ByteArrayHandler {
 		String temp2 = "-----BEGIN PGP MESSAGE-----\n"
 				+ "Version: OpenPGP.js v2.5.6\n"
 				+ "Comment: https://openpgpjs.org\n\n"
-				+ "wy4ECQMIMpJgCc/pIpdg4jPp8lzZvWjjZVg8HbJdSGpqJvcWASG9ANpCv82G\n"
-				+ "oECD0kEBHgZfg59Yw3j22g9DLD3qLn56za1TH9eNd2W86T47ACY2Qz0IFjqE\n"
-				+ "KdvEHDdXikrnOUseP+MJWdSRfZ+iftkBng==\n"
-				+ "=LJZ9\n"
+				+ "wy4ECQMItudmIxIY2oxgWiN/IhdNvmvDGLjAa+KnKnn0/6wGCcDDCFWhkZFj\n"
+				+ "aVO10k0BvuoNJpjboJZwsPPr5nigBs3TMSouv6nfvqm30YYa2qbnDApR1aZm\n"
+				+ "l9fGCMxQ9kphFHTR5rzL7xJZzK8qVKSCD18K2y6ui/HBPl2nAg==\n"
+				+ "=GnLs\n"
 				+ "-----END PGP MESSAGE-----";
 		
 		byte[] decrypted = decrypt(temp2.getBytes(), passArray);
