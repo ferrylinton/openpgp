@@ -188,7 +188,7 @@ public class ByteArrayHandler {
 		String passPhrase = "password";
 		char[] passArray = passPhrase.toCharArray();
 
-		byte[] original = "Hello world".getBytes();
+		byte[] original = "Hello world 1234566 1@#$%^&*()".getBytes();
 		System.out.println("Starting PGP test");
 		byte[] encrypted = encrypt(original, passArray, PGPEncryptedDataGenerator.CAST5, false);
 
@@ -215,11 +215,11 @@ public class ByteArrayHandler {
 
 		System.out.println("\ndecrypted data = '" + new String(decrypted) + "'");
 
-		encrypted = encrypt(original, passArray, PGPEncryptedDataGenerator.AES_256, false);
+		encrypted = encrypt(original, passArray, PGPEncryptedDataGenerator.CAST5, false);
 
 		System.out.println(
-				"\nencrypted data = '" + new String(org.bouncycastle.util.encoders.Hex.encode(encrypted)) + "'");
-		decrypted = decrypt(encrypted, passArray);
+				"\nencrypted data = '" + new String(org.bouncycastle.util.encoders.Base64.encode(encrypted)) + "'");
+		decrypted = decrypt("wy4ECQMIu0TyNhlS2btgMqSbuL+vErJgZ71do3Vr+o9Tj67ge8JxLzDKWAv/x8W+0kEB9Yij2YKECIkxHwG8yKKtP7rkI3rI1oHe71tPHZbLbD8KW8IZ5GTWQy3WEvp8hlG9GhyPl2t+chnweq0l8/itSQ==".getBytes(), passArray);
 
 		System.out.println("\ndecrypted data = '" + new String(decrypted) + "'");
 	}
